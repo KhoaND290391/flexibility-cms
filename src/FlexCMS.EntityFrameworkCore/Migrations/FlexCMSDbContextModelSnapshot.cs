@@ -1034,6 +1034,40 @@ namespace FlexCMS.Migrations
                     b.ToTable("AbpUsers");
                 });
 
+            modelBuilder.Entity("FlexCMS.Contents.Content", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<long?>("CreatorUserId");
+
+                    b.Property<long?>("DeleterUserId");
+
+                    b.Property<DateTime?>("DeletionTime");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime");
+
+                    b.Property<long?>("LastModifierUserId");
+
+                    b.Property<string>("PageContent")
+                        .IsRequired();
+
+                    b.Property<string>("PageName")
+                        .IsRequired()
+                        .HasMaxLength(1024);
+
+                    b.Property<int>("TenantId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Content");
+                });
+
             modelBuilder.Entity("FlexCMS.MultiTenancy.Tenant", b =>
                 {
                     b.Property<int>("Id")

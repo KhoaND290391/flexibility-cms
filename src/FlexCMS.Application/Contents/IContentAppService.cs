@@ -7,9 +7,9 @@ namespace FlexCMS.Contents
 {
     public interface IContentAppService : IApplicationService
     {
-        Task<ContentDto> GetCMSContentAsync(int id);
-        Task<ContentDto> GetCMSContentAsync(string pageName);
-        Task<int> InsertOrUpdateCMSContentAsync(CreateContentDto content);
-        Task<ListResultDto<ContentDto>> GetAllAsync();
+        Task<ContentDto> GetCMSContent(int id);
+        Task<ContentDto> GetCMSContentByName(string pageName);
+        Task<ContentDto> InsertOrUpdateCMSContent(CreateOrUpdateContentDto content);
+        Task<ListResultDto<ContentDto>> GetAll();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Abp.Domain.Repositories;
 using Abp.Events.Bus;
+using FlexCMS.Authorization.Users;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,24 +23,25 @@ namespace FlexCMS.Contents
             EventBus = NullEventBus.Instance;
         }
 
-        public Task<Content> GetCMSContent(int id)
+        public async Task<Content> GetCMSContentByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _contentRepository.FirstOrDefaultAsync(id);
         }
 
-        public Task<Content> GetCMSContent(string pageName)
+        public async Task<Content> GetCMSContentByNameAsync(string pageName)
         {
-            throw new NotImplementedException();
+            return await _contentRepository.FirstOrDefaultAsync(o => o.PageName.Equals(pageName, StringComparison.OrdinalIgnoreCase));
         }
 
-        public Task<int> InsertOrUpdateCMSContent(Content content)
+        public async Task<int> InsertOrUpdateCMSContentAsync(Content content, User creator)
         {
-            throw new NotImplementedException();
+            await _contentPolicy.CheckUserAbleToReactTheContent(content, creator);
+            return await _contentRepository.InsertOrUpdateAndGetIdAsync(content);
         }
 
-        public Task<IEnumerable<Content>> GetAll()
+        public async Task<IList<Content>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _contentRepository.GetAllListAsync();
         }
     }
 }

@@ -1,14 +1,11 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.AutoMapper;
-using Abp.Domain.Repositories;
 using Abp.Runtime.Session;
 using Abp.UI;
 using FlexCMS.Contents.Dto;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FlexCMS.Contents
@@ -17,32 +14,25 @@ namespace FlexCMS.Contents
     public class ContentAppService : FlexCMSAppServiceBase, IContentAppService
     {
         private readonly IContentManager _contentManager;
-        private readonly IRepository<Content, int> _contentRepository;
-        public ContentAppService(IContentManager contentManager, IRepository<Content, int> contentRepository)
+        public ContentAppService(IContentManager contentManager)
         {
             _contentManager = contentManager;
-            _contentRepository = contentRepository;
         }
 
-        public async Task<ListResultDto<ContentDto>> GetAllAsync()
+        public async Task<ListResultDto<ContentDto>> GetAll()
         {
-            var contents = await _contentRepository.GetAll().ToListAsync();
+            var contents = await _contentManager.GetAllAsync();
             return new ListResultDto<ContentDto>(contents.MapTo<List<ContentDto>>());
         }
 
-        public async Task<ContentDto> GetCMSContentAsync(int id)
+        public async Task<ContentDto> GetCMSContent(int id)
         {
-            var content = await _contentRepository.FirstOrDefaultAsync(o => o.Id == id);
-            if(content == null)
-            {
-                throw new UserFriendlyException("Could not found the content, maybe it's deleted.");
-            }
-            return content.MapTo<ContentDto>();
+            return await GetContentByIdAsync(id);
         }
 
-        public async Task<ContentDto> GetCMSContentAsync(string pageName)
+        public async Task<ContentDto> GetCMSContentByName(string pageName)
         {
-            var content = await _contentRepository.FirstOrDefaultAsync(o => o.PageName.Equals(pageName, StringComparison.OrdinalIgnoreCase));
+            var content = await _contentManager.GetCMSContentByNameAsync(pageName);
             if (content == null)
             {
                 throw new UserFriendlyException("Could not found the content, maybe it's deleted.");
@@ -50,14 +40,24 @@ namespace FlexCMS.Contents
             return content.MapTo<ContentDto>();
         }
 
-        public async Task<int> InsertOrUpdateCMSContentAsync(CreateContentDto content)
+        public async Task<ContentDto> InsertOrUpdateCMSContent(CreateOrUpdateContentDto content)
         {
-            var reactor = Content.CreateContent(content.PageName, content.PageContent, AbpSession.GetTenantId());
-            var successCode =  await _contentManager.InsertOrUpdateCMSContent(reactor);
+            var tenantId = AbpSession?.TenantId ?? 0;
+            var reactor = Content.CreateContent(content.Id, content.PageName, content.PageContent, tenantId);
+            var id = await _contentManager.InsertOrUpdateCMSContentAsync(reactor, await GetCurrentUserAsync());
             await SaveAllChangesAsync();
-            return successCode;
+            return await GetContentByIdAsync(id);
         }
 
+        private async Task<ContentDto> GetContentByIdAsync(int id)
+        {
+            var content = await _contentManager.GetCMSContentByIdAsync(id);
+            if (content == null)
+            {
+                throw new UserFriendlyException("Could not found the content, maybe it's deleted.");
+            }
+            return content.MapTo<ContentDto>();
+        }
 
         private async Task SaveAllChangesAsync()
         {

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FlexCMS.Contents
 {
     [Table("Content")]
-    public class Content : FullAuditedEntity<int>, IMustHaveTenant
+    public class Content : FullAuditedEntity<int>
     {
         public const int MaxPageNameLength = 1024;
         public virtual int TenantId { get; set; }
@@ -19,10 +19,11 @@ namespace FlexCMS.Contents
         [Required]
         public virtual string PageContent { get; protected set; }
 
-        public static Content CreateContent(string pageName, string pageContent, int tenantId)
+        public static Content CreateContent(int id, string pageName, string pageContent, int tenantId)
         {
             return new Content
             {
+                Id = id,
                 PageName = pageName,
                 PageContent = pageContent,
                 TenantId = tenantId
