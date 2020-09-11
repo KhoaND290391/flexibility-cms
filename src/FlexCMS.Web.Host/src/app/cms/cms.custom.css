@@ -1,0 +1,22 @@
+.cmsHeader {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18pt;
+}
+
+.pageNameInput {
+    border: solid 1px lightgrey;
+    font-size: 18pt;
+    font-weight: bold;
+    min-width: 400px;
+    border-radius: 5px;
+}
+
+.cmsEditor {
+    min-height: 400px;
+
+}
+
+.ql-editor {
+    min-height: 400px !important;
+}

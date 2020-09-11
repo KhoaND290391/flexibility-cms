@@ -8,7 +8,7 @@
 // ReSharper disable InconsistentNaming
 
 import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 'rxjs/operators';
-import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
+import { Observable, throwError as _observableThrow, of as _observableOf, Subject } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 
@@ -3686,6 +3686,7 @@ export class ContentDto implements IContent {
 
 @Injectable()
 export class ContentServiceProxy {
+    private shouldGetAll: Subject<number> = new Subject<number>();
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: (key: string, value: any) => any = undefined;
@@ -3695,12 +3696,8 @@ export class ContentServiceProxy {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    /**
-     * @param includeCanceledEvents (optional) 
-     * @return Success
-     */
     getAll(): Observable<ListResultDtoOfContentDto> {
-        let url_ = this.baseUrl + "/api/services/app//api/services/app/Content/GetAll";
+        let url_ = this.baseUrl + "/api/services/app/Content/GetAll";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3805,7 +3802,7 @@ export class ContentServiceProxy {
      * @param input (optional) 
      * @return Success
      */
-    insertOrUpdateCMSContent(input: ContentDto): Observable<void> {
+    insertOrUpdateCMSContent(input: ContentDto): Observable<ContentDto> {
         let url_ = this.baseUrl + "/api/services/app/Content/InsertOrUpdateCMSContent";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3827,14 +3824,14 @@ export class ContentServiceProxy {
                 try {
                     return this.processInsertOrUpdateCMSContent(<any>response_);
                 } catch (e) {
-                    return <Observable<void>><any>_observableThrow(e);
+                    return <Observable<ContentDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<void>><any>_observableThrow(response_);
+                return <Observable<ContentDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processInsertOrUpdateCMSContent(response: HttpResponseBase): Observable<void> {
+    protected processInsertOrUpdateCMSContent(response: HttpResponseBase): Observable<ContentDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -3843,14 +3840,24 @@ export class ContentServiceProxy {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(<any>null);
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 ? ContentDto.fromJS(resultData200) : new ContentDto();
+                return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<void>(<any>null);
+        return _observableOf<ContentDto>(<any>null);
+    }
+
+    emitShouldGetAll(input: number) {
+        this.shouldGetAll.next(input);
+    }
+    subscribeShouldGetAll(): Observable<number> {
+        return this.shouldGetAll.asObservable();
     }
    
 }

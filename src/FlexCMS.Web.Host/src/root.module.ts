@@ -22,6 +22,8 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { GestureConfig } from '@angular/material';
 
+import { QuillModule } from 'ngx-quill';
+
 import * as _ from 'lodash';
 
 export function appInitializerFactory(injector: Injector,
@@ -100,7 +102,8 @@ export function getCurrentLanguage(): string {
         AbpModule,
         ServiceProxyModule,
         RootRoutingModule,
-        HttpClientModule
+        HttpClientModule,
+        QuillModule.forRoot()
     ],
     declarations: [
         RootComponent

@@ -2,6 +2,7 @@
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using FlexCMS.Authorization;
+using FlexCMS.Configuration.CustomMenu;
 
 namespace FlexCMS
 {
@@ -13,6 +14,7 @@ namespace FlexCMS
         public override void PreInitialize()
         {
             Configuration.Authorization.Providers.Add<FlexCMSAuthorizationProvider>();
+            //Configuration.Navigation.Providers.Add<CustomNavigationProvider>();
         }
 
         public override void Initialize()

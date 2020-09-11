@@ -14,6 +14,7 @@ import { AbpModule } from '@abp/abp.module';
 
 import { ServiceProxyModule } from '@shared/service-proxies/service-proxy.module';
 import { SharedModule } from '@shared/shared.module';
+import { QuillModule } from 'ngx-quill';
 
 import { HomeComponent } from '@app/home/home.component';
 import { AboutComponent } from '@app/about/about.component';
@@ -37,6 +38,8 @@ import { CreateUserDialogComponent } from '@app/users/create-user/create-user-di
 import { EditUserDialogComponent } from '@app/users/edit-user/edit-user-dialog.component';
 import { ChangePasswordComponent } from './users/change-password/change-password.component';
 import { ResetPasswordDialogComponent } from './users/reset-password/reset-password.component';
+//cms
+import { CmsComponent } from './cms/cms.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +65,9 @@ import { ResetPasswordDialogComponent } from './users/reset-password/reset-passw
     CreateUserDialogComponent,
     EditUserDialogComponent,
     ChangePasswordComponent,
-    ResetPasswordDialogComponent
+    ResetPasswordDialogComponent,
+    // components
+    CmsComponent
   ],
   imports: [
     CommonModule,
@@ -75,7 +80,8 @@ import { ResetPasswordDialogComponent } from './users/reset-password/reset-passw
     AppRoutingModule,
     ServiceProxyModule,
     SharedModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    QuillModule,
   ],
   providers: [],
   entryComponents: [
