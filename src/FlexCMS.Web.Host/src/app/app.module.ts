@@ -15,6 +15,7 @@ import { AbpModule } from '@abp/abp.module';
 import { ServiceProxyModule } from '@shared/service-proxies/service-proxy.module';
 import { SharedModule } from '@shared/shared.module';
 import { QuillModule } from 'ngx-quill';
+import { ToastrModule } from 'ngx-toastr';
 
 import { HomeComponent } from '@app/home/home.component';
 import { AboutComponent } from '@app/about/about.component';
@@ -82,6 +83,7 @@ import { CmsComponent } from './cms/cms.component';
     SharedModule,
     NgxPaginationModule,
     QuillModule,
+    ToastrModule
   ],
   providers: [],
   entryComponents: [

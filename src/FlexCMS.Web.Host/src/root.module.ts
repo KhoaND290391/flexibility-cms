@@ -23,6 +23,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { GestureConfig } from '@angular/material';
 
 import { QuillModule } from 'ngx-quill';
+import { ToastrModule } from 'ngx-toastr';
 
 import * as _ from 'lodash';
 
@@ -103,7 +104,8 @@ export function getCurrentLanguage(): string {
         ServiceProxyModule,
         RootRoutingModule,
         HttpClientModule,
-        QuillModule.forRoot()
+        QuillModule.forRoot(),
+        ToastrModule.forRoot(),
     ],
     declarations: [
         RootComponent
